@@ -7,11 +7,13 @@ Olivia de Goede
 
 ### Package info
 
-These were the packages tested: \*
-[DataExplorer](http://boxuancui.github.io/DataExplorer/) \*
-[skimr](https://docs.ropensci.org/skimr/articles/skimr.html) \*
-[dlookr](https://github.com/choonghyunryu/dlookr) \*
-[validate](https://data-cleaning.github.io/validate/index.html)
+These were the packages tested:
+
+-   DataExplorer ([link](http://boxuancui.github.io/DataExplorer/))
+-   skimr ([link](https://docs.ropensci.org/skimr/articles/skimr.html))
+-   dlookr ([link](https://github.com/choonghyunryu/dlookr))
+-   validate
+    ([link](https://data-cleaning.github.io/validate/index.html))
 
 All of these are CRAN packages, and they are all available on the HDP
 CRAN website. <br /> <br />
