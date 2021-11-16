@@ -1,0 +1,441 @@
+---
+title: "Testing R packages for exploratory data analysis and data profiling"
+author: "Olivia de Goede"
+date: "05/11/2021"
+output:
+  html_document:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "C:/Users/ODEGOEDE/data_profiling")
+
+library(tidyverse)
+library(ggedit)
+
+data_folder <- "toy_data"
+fig_folder <- "figure"
+out_folder <- "output"
+```
+
+## Intro
+
+### Package info
+
+These were the packages tested:
+* [DataExplorer](http://boxuancui.github.io/DataExplorer/)
+* [skimr](https://docs.ropensci.org/skimr/articles/skimr.html)
+* [dlookr](https://github.com/choonghyunryu/dlookr)
+* [validate](https://data-cleaning.github.io/validate/index.html)
+
+All of these are CRAN packages, and they are all available on the HDP CRAN website.
+<br />
+<br />
+## tl;dr
+
+`DataExplorer`, `skimr`, and `dlookr` do fairly similar things (overall summaries of data, basic initial exploration). Of the three, `dlookr` was my preference; it had more thorough documentation, generated better quality plots, and the web report it makes looks a bit more slick than the ones made by the other packages.
+
+The `validate` package lets the user create rules, and then tests those rules in the dataset. I can picture us packaging and sharing rules, e.g. postal code checks, date checks, etc., for users to apply to their own data that they've brought in (there are a couple of options for how to share rules described in this package's extensive documentation). Users could also improve on our rules and suggest new ones that we could add to our data profiling.
+
+I think a combo of `dlookr` and `validate` would be a good starting point for data profiling in R.
+<br />
+<br />
+## Set-up
+
+### Install packages
+
+```{r pkg_install, message=FALSE, warning=FALSE}
+library(DataExplorer)
+library(skimr)
+library(dlookr)
+library(validate)
+```
+
+
+### Toy datasets
+
+I'm mostly using `fake_ppl`, which is a mock dataset I made of 1000 fake people with some "personal info" and some nonsensical numeric data. It incorporates some missingness, and the postal codes are deliberately messy.
+
+`ergo` is from [calmcode](https://calmcode.io/datasets.html), and has a lot of numeric data that behaves like real data (body measurements of people). Some missingness.
+
+`owid_covid` is COVID data (number of cases, hospitalizations, vaccinations, etc.), aggregated by geographic region. It's from [Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data).
+
+`glob_mob` summarizes global mobility: change in travel during COVID, aggregated by geographic region. It's a [Google dataset](https://www.google.com/covid19/mobility/). It is a very big dataset, so it's good for testing the limits of these packages (7.5 million rows).
+
+
+```{r data_load}
+fake_ppl <- read_csv(file = "toy_data/mockaroo_edited_MOCK_DATA.csv",
+                     show_col_types = FALSE)
+ergo <- read_csv(file = "toy_data/calmcode_ergonomics.csv",
+                 show_col_types = FALSE)
+owid_covid <- read_csv(file = "toy_data/our_world_in_data_covid_data.csv",
+                       show_col_types = FALSE)
+glob_mob <- read_csv(file = "toy_data/google_Global_Mobility_Report.csv",
+                     show_col_types = FALSE)
+tibble(dataset = c("fake_ppl", "ergo", "owid_covid", "glob_mob"),
+       n_rows = c(nrow(fake_ppl), nrow(ergo), nrow(owid_covid), nrow(glob_mob)), 
+       n_cols = c(ncol(fake_ppl), ncol(ergo), ncol(owid_covid), ncol(glob_mob)))
+```
+<br />
+<br />
+## 1. DataExplorer
+
+### Examples of tables and graphs made by this package
+
+`introduce` produces a general overview table of your data:
+```{r dataExp_introduce}
+introduce(fake_ppl)
+t(introduce(fake_ppl))
+t(introduce(ergo))
+t(introduce(owid_covid))
+t(introduce(glob_mob))
+```
+There is also a plot form of this, which you can see in the final reports, but IMO the table form is more compact and useful.
+
+<br />
+
+`plot_missing` makes a handy plot of the number of missing values for each field.
+```{r dataExp_missing}
+plot_missing(fake_ppl)
+plot_missing(ergo)
+plot_missing(owid_covid)
+plot_missing(glob_mob)
+```
+
+<br />
+
+`plot_bar` shows the frequency of categories for each discrete data element. It ignores columns with >50 categores (this can be customized).
+Leaving `glob_mob` out, because of how long it takes to plot.
+```{r dataExp_bar}
+plot_bar(fake_ppl)
+plot_bar(ergo)
+plot_bar(owid_covid)
+```
+
+It can be customized, e.g. group the data by an additional variable, or plot only a few variables of interest:
+```{r}
+plot_bar(fake_ppl, by = "sex")
+fake_ppl %>%
+  select(measure_4, measure_2) %>%
+  plot_bar()
+```
+
+<br />
+
+`plot_histogram` shows the distribution of continuous data. Leaving `glob_mob` out, because of how long it takes to plot.
+```{r dataExp_hist}
+plot_histogram(fake_ppl)
+plot_histogram(ergo)
+plot_histogram(owid_covid)
+```
+
+<br />
+
+`plot_qq` compares the data with a given distribution (by default, normal distribution). Leaving `glob_mob` out, because of how long it takes to plot.
+```{r dataExp_qq}
+plot_qq(fake_ppl)
+plot_qq(ergo, by = "gender")
+plot_qq(owid_covid)
+```
+
+<br />
+
+There's also a correlation heatmap. Showing just for `ergo`, since that was the only dataset that worked well with this (`fake_ppl` doesn't have many variables, `owid_covid` has too much missingness, `glob_mob` is too big).
+```{r dataExp_corr, fig.width=10, fig.height=10}
+plot_correlation(ergo)
+```
+
+<br />
+
+There are also some PCA plotting functions, not sure if that will be necessary for our purposes. Showing just for `ergo`, since that was the only dataset that worked well with this (`fake_ppl` doesn't have many variables, `owid_covid` has too much missingness, `glob_mob` is too big).
+```{r dataExp_pca, fig.width=10, fig.height=12}
+plot_prcomp(ergo)
+```
+
+<br />
+
+Plots not shown: boxplots and scatterplots. Could be useful if there's a grouping variable of interest (boxplots) or a particularly important continuous variable that you want to see how everything else stacks up against (scatterplots)
+<br />
+<br />
+### Comments on reports
+
+Example line to make a report (commented out because I've already generated the report, and don't actually want it to run):
+```{r dataExp_report}
+# create_report(fake_ppl, output_file = "dataexplorer_report_fakeppl.html", output_dir = "output/")
+```
+
+Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the output directory. 
+
+For `glob_mob`, I bumped up the memory limit, and things were going pretty well. But, after ~10 min, the report quit with an error message that was related to the data itself, rather than memory limits or time limits. ("all discrete features ignored! Nothing to plot!"). Basically, for all categorical variables, there were too many categories for the `plot_bar()` threshold. Rather than skip the graph and move on, the report terminated entirely. This approach isn't very flexible for running on datasets where you don't know exactly what the layout is yet.
+
+<br />
+<br />
+### Main takeaways for DataExplorer
+
+* CRAN package
+* code is straightforward and interpretable, but limited customization
+* reports are fast with smaller datasets (i.e. a few thousand rows), but on the slow side for big ones
+* reports might just fail if a dataset doesn't conform to the package's requirements (e.g. with `glob_mob`)
+* doesn't provide many summary stats on continuous data, just plots
+
+
+<br />
+<br />
+## 2. skimr
+
+skimr just does summary statistics, in a nice little report. It looks good, but is fairly limited, and the histogram that is included in the report has such large bins (and is so small) that I didn't find them particularly useful.
+
+Here's `skim()` on all datasets. For `glob_mob`, it took 3-4 minutes to run.
+```{r skimr_skim}
+skim(fake_ppl)
+skim(ergo)
+skim(owid_covid)
+skim(glob_mob)
+```
+
+*note: histograms aren't even displaying here (getting  <U2xxx> codes instead); appears to be a font incompatibility issue, which could be worked around if we thought it was worth it to get these histograms (it isn't).
+
+<br />
+
+Histograms can be cut out of the report, though:
+```{r skimr_noHist}
+skim_without_charts(fake_ppl)
+```
+
+<br />
+
+It's tidyverse compatible, and data can be piped in:
+```{r skimr_pipe}
+skim_without_charts(fake_ppl) %>%
+  filter(skim_variable == "birth_date")
+
+fake_ppl %>%
+  group_by(sex) %>%
+  skim_without_charts()
+
+fake_ppl %>%
+  skim_without_charts() %>%
+  yank("numeric")
+```
+
+<br />
+<br />
+### Main takeaways for skimr
+
+* CRAN package
+* code is straightforward and interpretable
+* has a Python counterpart (skimpy), could be useful for consistency in documentation
+* works reasonably quickly on datasets with millions of rows (a couple of minutes)
+* the histogram plot is often not on a useful scale and the bins are too large to provide much insight. there are also font incompatibilities.
+* would use just for the numbers, and then look to other tools for plotting
+
+<br />
+<br />
+## 3. dlookr
+
+### Examples of tables and graphs made by this package
+
+`diagnose` examines all variables in a data frame/tibble. More specific functions: `diagnose_numeric` provides summary stats on any numeric fields, and `diagnose_category` dives into all categorical variables. 
+```{r dlookr_diag}
+diagnose(fake_ppl)
+diagnose_numeric(fake_ppl)
+diagnose_category(fake_ppl, variables = c("sex", "postal_start_auto"))
+```
+
+<br />
+
+It is compatible with the tidyverse style, which can help pull out variables of interest for further examination:
+```{r dlookr_diag_tidy}
+fake_ppl %>%
+  diagnose() %>%
+  select(-unique_count, -unique_rate) %>%
+  filter(missing_count > 0) %>%
+  arrange(desc(missing_count))
+
+fake_ppl %>%
+  select(postal_start_auto) %>%
+  diagnose_category(top = 100)
+```
+
+<br />
+
+`diagnose_outlier` identifies numeric outliers. Outliers are based on the `boxplot.stats()` definition of outlier: values lying beyond the extremes of boxplot whiskers, which by default is set to 1.5*IQR from the box. They aren't easily customized.
+
+```{r dlookr_diag_out}
+diagnose_outlier(fake_ppl) # this one has randomly generated numbers, no design to have outliers; won't be very interesting
+diagnose_outlier(ergo) %>%
+  filter(outliers_cnt > 0)
+diagnose_outlier(ergo) %>%
+  filter(outliers_ratio > 1.2)
+diagnose_outlier(glob_mob) %>%
+  filter(outliers_cnt > 0)
+```
+
+<br />
+
+Outlier info can be plotted as well. Here, I'm getting details on all fields in `ergo` that have an outliers_ratio > 1.3 (six variables):
+```{r dlookr_diag_out_tidy}
+ergo %>%
+  plot_outlier(diagnose_outlier(ergo) %>%
+                 filter(outliers_ratio > 1.3) %>%
+                 select(variables) %>%
+                 unlist())
+```
+
+<br />
+
+There are also a few functions for summaries of numerical data, including `describe`, `normality`, and `plot_normality`:
+```{r dlookr_num_describe}
+describe(fake_ppl)
+
+normality(fake_ppl)
+plot_normality(fake_ppl, measure_7)
+
+normality(ergo)
+plot_normality(ergo, axillaheight)
+```
+
+<br />
+
+There are also options to calculate correlations between all possible pairs of variables, and plot in a similar heatmap style to DataExplorer. It ends up looking pretty squished with large datasets. There's no easy way to remove the text labels from each square in the heatmap within the function; instead, you can first assign the plot to gg object, then remove the text using `remove_geom` from the `ggedit` package.
+
+```{r dlookr_corr, fig.width=12, fig.height=12}
+g <- plot_correlate(ergo)
+g_new <- remove_geom(g, "text")
+g_new
+```
+
+<br />
+
+There are additional functions described in the documentation to target certain variables of interest for further checks. I won't go into them here, but they could be of interest.
+
+<br />
+<br />
+### Comments on reports
+
+The report output looks nice; offers recommendations, not sure if that's a good or bad thing. Not practical for large datasets (for `glob_mob`, I terminated it after an hour).
+
+There are separate reports for data diagnosis and data exploration/summary
+
+Sample code to get a report. Note: a relative path didn't work for output_dir.
+
+```{r dlookr_report}
+# ergo %>% diagnose_web_report(subtitle = "ergo", output_dir = "C:/Users/ODEGOEDE/data_profiling/output/",
+#                              output_file = "dlookr_ergo_diag.html")
+# ergo %>% eda_web_report(subtitle = "ergo", output_dir = "C:/Users/ODEGOEDE/data_profiling/output/",
+#                              output_file = "dlookr_ergo_eda.html")
+```
+
+Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the output directory. 
+
+<br />
+<br />
+### Main takeaways for dlookr
+
+* CRAN package
+* code is straightforward and interpretable, but limited customization
+* tidyverse compatible
+* makes some nice graphs
+* thorough numeric data description in describe() function
+* web report has nice style to it, although the recommendations aren't terribly useful (almost always "judgement")
+* report is very slow on large datasets (millions of rows)
+
+<br />
+<br />
+## 4. validate
+
+The validate package is about setting and testing rules in the dataset, not general exploration. Any R expression that results in a logical is accepted by validate as a validation rule.
+
+I'll make up and test a couple of rules for `fake_ppl` and `glob_mob` to show how they work.
+
+```{r validate_fp}
+valid_sex <- c("M", "F", "U")
+rules_fp <- validator(
+  # 1. postal code should have 3 or 6 digits
+  (nchar(gsub(" ","", postal_code)) != 6) & (nchar(gsub(" ","", postal_code)) != 3),
+  # 2. there shouldn't be an NA in postal code
+  grepl("NA", postal_code),
+  # 3. birthdate should be within 1900 and 2021
+  in_range(birth_date, min = "1900-01-01", max = "2021-12-31"),
+  # 4. designed to have some fails: birthdate should be within 1950 and 2021
+  in_range(birth_date, min = "1950-01-01", max = "2021-12-31"),
+  # 5. biological sex should be one of the expected options - Male, Female, and Unknown
+  sex %in% valid_sex,
+  # 6. each person should have a unique combo of first name, last name, and birthdate
+  is_unique(first_name, last_name, birth_date),
+  # 7. designed to have some fails: each person should have a unique combo of first name and biological sex
+  is_unique(first_name, sex),
+  # 8. designed to have some fails: random test involving meaningless numbers
+  measure_7 >= 2*measure_6,
+  # 9. designed to have some fails: random test involving meaningless numbers
+  if (sex == "F") measure_2 == 0
+)
+
+out <- confront(fake_ppl, rules_fp)
+summary(out)
+```
+
+<br />
+
+When a rule is broken, you can dive into it and figure out which rows are breaking the rule.
+```{r validate_rulebreakers}
+mini_rules <- validator(
+  is_unique(first_name, sex)
+)
+
+violating(fake_ppl, confront(fake_ppl, mini_rules))
+```
+
+<br />
+
+There are also options to use indicators: rules that return numerical values. In my first playing around with this, I haven't been found them to be particularly useful, but I didn't spend to long on it. I also didn't find the output of indicator testing to be well displayed.
+
+```{r validate_indicators}
+indic_fp <- indicator(
+  num_high_risk = sum(measure_1),
+  mean_val = mean(measure_6),
+  sd_val = sd(measure_6)
+)
+
+indic_out <- confront(fake_ppl, indic_fp)
+
+indic_out
+summary(indic_out)
+```
+
+<br />
+
+To see how long rules take to run on a big dataset, I tested a couple on `glob_mob`:
+```{r validate_globmob}
+rules_gm <- validator(
+  # 1. date has to be within Feb 20, 2020 and today
+  in_range(date, min = "2020-02-20", max = format(Sys.time(), "%Y-%m-%d")),
+  # 2. the change in mobility from baseline (for retail and rec) should never be less than -100%
+  retail_and_recreation_percent_change_from_baseline > -100
+)
+
+start_time <- Sys.time()
+out <- confront(glob_mob, rules_gm)
+end_time <- Sys.time()
+end_time - start_time
+## ^ pretty fast (but not many rules)
+
+summary(out)
+```
+
+<br />
+<br />
+### Main takeaways for validate
+
+* CRAN package
+* code is straightforward and interpretable
+* documentation is __very__ thorough
+* didn't look too much into this, but there's also a package called validatedb that works on SQL databases; could be more efficient
+* rules can be imported and exported to and from various formats - good for sharing
+* possible issue: if rules are reused and shared, column names either need to be consistent between the different data sets, or each user needs to customize the rules
+* the rules I've done here are quite simple, but it would be possible to do more complex statistical testing as rules (anything that can be written to produce a logical will work as a rule)
+* not shown in this doc, but there's also functions to compare different versions of a dataset (could be useful for deltas)
+
+<br />
+<br />
