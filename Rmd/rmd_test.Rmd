@@ -30,6 +30,7 @@ These were the packages tested:
 All of these are CRAN packages, and they are all available on the HDP CRAN website.
 <br />
 <br />
+
 ## tl;dr
 
 `DataExplorer`, `skimr`, and `dlookr` do fairly similar things (overall summaries of data, basic initial exploration). Of the three, `dlookr` was my preference; it had more thorough documentation, generated better quality plots, and the web report it makes looks a bit more slick than the ones made by the other packages.
@@ -39,6 +40,7 @@ The `validate` package lets the user create rules, and then tests those rules in
 I think a combo of `dlookr` and `validate` would be a good starting point for data profiling in R.
 <br />
 <br />
+
 ## Set-up
 
 ### Install packages
@@ -77,6 +79,7 @@ tibble(dataset = c("fake_ppl", "ergo", "owid_covid", "glob_mob"),
 ```
 <br />
 <br />
+
 ## 1. DataExplorer
 
 ### Examples of tables and graphs made by this package

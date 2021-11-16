@@ -14,7 +14,9 @@ These were the packages tested: \*
 [validate](https://data-cleaning.github.io/validate/index.html)
 
 All of these are CRAN packages, and they are all available on the HDP
-CRAN website. <br /> <br /> \#\# tl;dr
+CRAN website. <br /> <br />
+
+## tl;dr
 
 `DataExplorer`, `skimr`, and `dlookr` do fairly similar things (overall
 summaries of data, basic initial exploration). Of the three, `dlookr`
@@ -31,7 +33,9 @@ Users could also improve on our rules and suggest new ones that we could
 add to our data profiling.
 
 I think a combo of `dlookr` and `validate` would be a good starting
-point for data profiling in R. <br /> <br /> \#\# Set-up
+point for data profiling in R. <br /> <br />
+
+## Set-up
 
 ### Install packages
 
@@ -86,7 +90,9 @@ tibble(dataset = c("fake_ppl", "ergo", "owid_covid", "glob_mob"),
     ## 3 owid_covid  130813     65
     ## 4 glob_mob   7500160     15
 
-<br /> <br /> \#\# 1. DataExplorer
+<br /> <br />
+
+## 1. DataExplorer
 
 ### Examples of tables and graphs made by this package
 
