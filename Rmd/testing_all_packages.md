@@ -3,6 +3,28 @@ Testing R packages for exploratory data analysis and data profiling
 Olivia de Goede
 05/11/2021
 
+-   [Intro](#intro)
+    -   [Package info](#package-info)
+-   [tl;dr](#tldr)
+-   [Set-up](#set-up)
+    -   [Install packages](#install-packages)
+    -   [Toy datasets](#toy-datasets)
+-   [1. DataExplorer](#1-dataexplorer)
+    -   [Examples of tables and graphs made by this
+        package](#examples-of-tables-and-graphs-made-by-this-package)
+    -   [Comments on reports](#comments-on-reports)
+    -   [Main takeaways for
+        DataExplorer](#main-takeaways-for-dataexplorer)
+-   [2. skimr](#2-skimr)
+    -   [Main takeaways for skimr](#main-takeaways-for-skimr)
+-   [3. dlookr](#3-dlookr)
+    -   [Examples of tables and graphs made by this
+        package](#examples-of-tables-and-graphs-made-by-this-package-1)
+    -   [Comments on reports](#comments-on-reports-1)
+    -   [Main takeaways for dlookr](#main-takeaways-for-dlookr)
+-   [4. validate](#4-validate)
+    -   [Main takeaways for validate](#main-takeaways-for-validate)
+
 ## Intro
 
 ### Package info
@@ -10740,16 +10762,16 @@ normality(ergo)
     ## # A tibble: 99 x 4
     ##    vars                           statistic  p_value sample
     ##    <chr>                              <dbl>    <dbl>  <dbl>
-    ##  1 subjectid                          0.219 4.45e-90   5000
-    ##  2 abdominalextensiondepthsitting     0.981 1.49e-25   5000
-    ##  3 acromialheight                     0.999 8.22e- 4   5000
-    ##  4 acromionradialelength              0.999 2.99e- 2   5000
-    ##  5 anklecircumference                 0.997 4.15e- 9   5000
-    ##  6 axillaheight                       0.999 2.56e- 2   5000
-    ##  7 balloffootcircumference            0.997 5.47e- 8   5000
-    ##  8 balloffootlength                   0.997 2.74e- 9   5000
-    ##  9 biacromialbreadth                  0.984 1.22e-23   5000
-    ## 10 bicepscircumferenceflexed          0.997 3.03e- 8   5000
+    ##  1 subjectid                          0.219 4.48e-90   5000
+    ##  2 abdominalextensiondepthsitting     0.980 6.62e-26   5000
+    ##  3 acromialheight                     0.998 5.44e- 5   5000
+    ##  4 acromionradialelength              0.999 8.08e- 3   5000
+    ##  5 anklecircumference                 0.997 7.99e- 8   5000
+    ##  6 axillaheight                       0.999 5.36e- 3   5000
+    ##  7 balloffootcircumference            0.997 2.88e- 8   5000
+    ##  8 balloffootlength                   0.997 2.50e- 9   5000
+    ##  9 biacromialbreadth                  0.983 3.61e-24   5000
+    ## 10 bicepscircumferenceflexed          0.997 7.42e- 9   5000
     ## # ... with 89 more rows
 
 ``` r
@@ -10964,7 +10986,7 @@ end_time <- Sys.time()
 end_time - start_time
 ```
 
-    ## Time difference of 0.2523289 secs
+    ## Time difference of 1.169148 secs
 
 ``` r
 ## ^ pretty fast (but not many rules)

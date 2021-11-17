@@ -2,7 +2,10 @@
 title: "Testing R packages for exploratory data analysis and data profiling"
 author: "Olivia de Goede"
 date: "05/11/2021"
-output: github_document
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
