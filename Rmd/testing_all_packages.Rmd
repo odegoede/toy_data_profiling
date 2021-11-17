@@ -2,9 +2,7 @@
 title: "Testing R packages for exploratory data analysis and data profiling"
 author: "Olivia de Goede"
 date: "05/11/2021"
-output:
-  html_document:
-    self_contained: false
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,10 +11,6 @@ knitr::opts_knit$set(root.dir = "C:/Users/ODEGOEDE/data_profiling")
 
 library(tidyverse)
 library(ggedit)
-
-data_folder <- "toy_data"
-fig_folder <- "figure"
-out_folder <- "output"
 ```
 
 ## Intro
@@ -24,14 +18,16 @@ out_folder <- "output"
 ### Package info
 
 These were the packages tested:
-* [DataExplorer](http://boxuancui.github.io/DataExplorer/)
-* [skimr](https://docs.ropensci.org/skimr/articles/skimr.html)
-* [dlookr](https://github.com/choonghyunryu/dlookr)
-* [validate](https://data-cleaning.github.io/validate/index.html)
+
+* DataExplorer ([link](http://boxuancui.github.io/DataExplorer/))
+* skimr ([link](https://docs.ropensci.org/skimr/articles/skimr.html))
+* dlookr ([link](https://github.com/choonghyunryu/dlookr))
+* validate ([link](https://data-cleaning.github.io/validate/index.html))
 
 All of these are CRAN packages, and they are all available on the HDP CRAN website.
 <br />
 <br />
+
 ## tl;dr
 
 `DataExplorer`, `skimr`, and `dlookr` do fairly similar things (overall summaries of data, basic initial exploration). Of the three, `dlookr` was my preference; it had more thorough documentation, generated better quality plots, and the web report it makes looks a bit more slick than the ones made by the other packages.
@@ -41,6 +37,7 @@ The `validate` package lets the user create rules, and then tests those rules in
 I think a combo of `dlookr` and `validate` would be a good starting point for data profiling in R.
 <br />
 <br />
+
 ## Set-up
 
 ### Install packages
@@ -79,6 +76,7 @@ tibble(dataset = c("fake_ppl", "ergo", "owid_covid", "glob_mob"),
 ```
 <br />
 <br />
+
 ## 1. DataExplorer
 
 ### Examples of tables and graphs made by this package
@@ -158,6 +156,7 @@ plot_prcomp(ergo)
 Plots not shown: boxplots and scatterplots. Could be useful if there's a grouping variable of interest (boxplots) or a particularly important continuous variable that you want to see how everything else stacks up against (scatterplots)
 <br />
 <br />
+
 ### Comments on reports
 
 Example line to make a report (commented out because I've already generated the report, and don't actually want it to run):
@@ -171,6 +170,7 @@ For `glob_mob`, I bumped up the memory limit, and things were going pretty well.
 
 <br />
 <br />
+
 ### Main takeaways for DataExplorer
 
 * CRAN package
@@ -182,6 +182,7 @@ For `glob_mob`, I bumped up the memory limit, and things were going pretty well.
 
 <br />
 <br />
+
 ## 2. skimr
 
 skimr just does summary statistics, in a nice little report. It looks good, but is fairly limited, and the histogram that is included in the report has such large bins (and is so small) that I didn't find them particularly useful.
@@ -221,6 +222,7 @@ fake_ppl %>%
 
 <br />
 <br />
+
 ### Main takeaways for skimr
 
 * CRAN package
@@ -232,6 +234,7 @@ fake_ppl %>%
 
 <br />
 <br />
+
 ## 3. dlookr
 
 ### Examples of tables and graphs made by this package
@@ -312,6 +315,7 @@ There are additional functions described in the documentation to target certain 
 
 <br />
 <br />
+
 ### Comments on reports
 
 The report output looks nice; offers recommendations, not sure if that's a good or bad thing. Not practical for large datasets (for `glob_mob`, I terminated it after an hour).
@@ -331,6 +335,7 @@ Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the ou
 
 <br />
 <br />
+
 ### Main takeaways for dlookr
 
 * CRAN package
@@ -343,6 +348,7 @@ Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the ou
 
 <br />
 <br />
+
 ## 4. validate
 
 The validate package is about setting and testing rules in the dataset, not general exploration. Any R expression that results in a logical is accepted by validate as a validation rule.
@@ -426,12 +432,13 @@ summary(out)
 
 <br />
 <br />
+
 ### Main takeaways for validate
 
 * CRAN package
 * code is straightforward and interpretable
 * documentation is __very__ thorough
-* didn't look too much into this, but there's also a package called validatedb that works on SQL databases; could be more efficient
+* didn't look too much into this, but there's also a package called validatedb that works on SQL databases
 * rules can be imported and exported to and from various formats - good for sharing
 * possible issue: if rules are reused and shared, column names either need to be consistent between the different data sets, or each user needs to customize the rules
 * the rules I've done here are quite simple, but it would be possible to do more complex statistical testing as rules (anything that can be written to produce a logical will work as a rule)
