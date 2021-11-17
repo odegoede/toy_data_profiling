@@ -183,24 +183,24 @@ each field.
 plot_missing(fake_ppl)
 ```
 
-![](rmd_test_files/figure-gfm/dataExp_missing-1.png)<!-- -->
+![](../figures/dataExp_missing-1.png)<!-- -->
 
 ``` r
 plot_missing(ergo)
 ```
 
-![](rmd_test_files/figure-gfm/dataExp_missing-2.png)<!-- -->
+![](../figures/dataExp_missing-2.png)<!-- -->
 
 ``` r
 plot_missing(owid_covid)
 ```
 
-![](rmd_test_files/figure-gfm/dataExp_missing-3.png)<!-- -->
+![](../figures/dataExp_missing-3.png)<!-- -->
 
 ``` r
 plot_missing(glob_mob)
 ```
 
-![](rmd_test_files/figure-gfm/dataExp_missing-4.png)<!-- -->
+![](../figures/dataExp_missing-4.png)<!-- -->
 
 <br />
