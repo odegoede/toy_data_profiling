@@ -444,8 +444,8 @@ generated the report, and don’t actually want it to run):
 # create_report(fake_ppl, output_file = "dataexplorer_report_fakeppl.html", output_dir = "output/")
 ```
 
-Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are
-in the output directory.
+Reports for `fake_ppl` and `owid_covid` are in the report\_examples
+directory.
 
 For `glob_mob`, I bumped up the memory limit, and things were going
 pretty well. But, after \~10 min, the report quit with an error message
@@ -10762,16 +10762,16 @@ normality(ergo)
     ## # A tibble: 99 x 4
     ##    vars                           statistic  p_value sample
     ##    <chr>                              <dbl>    <dbl>  <dbl>
-    ##  1 subjectid                          0.219 4.48e-90   5000
-    ##  2 abdominalextensiondepthsitting     0.980 6.62e-26   5000
-    ##  3 acromialheight                     0.998 5.44e- 5   5000
-    ##  4 acromionradialelength              0.999 8.08e- 3   5000
-    ##  5 anklecircumference                 0.997 7.99e- 8   5000
-    ##  6 axillaheight                       0.999 5.36e- 3   5000
-    ##  7 balloffootcircumference            0.997 2.88e- 8   5000
-    ##  8 balloffootlength                   0.997 2.50e- 9   5000
-    ##  9 biacromialbreadth                  0.983 3.61e-24   5000
-    ## 10 bicepscircumferenceflexed          0.997 7.42e- 9   5000
+    ##  1 subjectid                          0.220 4.59e-90   5000
+    ##  2 abdominalextensiondepthsitting     0.982 1.51e-24   5000
+    ##  3 acromialheight                     0.999 5.76e- 4   5000
+    ##  4 acromionradialelength              0.999 1.70e- 2   5000
+    ##  5 anklecircumference                 0.998 1.45e- 6   5000
+    ##  6 axillaheight                       0.999 3.46e- 2   5000
+    ##  7 balloffootcircumference            0.997 4.80e- 8   5000
+    ##  8 balloffootlength                   0.997 4.14e- 9   5000
+    ##  9 biacromialbreadth                  0.984 1.53e-23   5000
+    ## 10 bicepscircumferenceflexed          0.997 7.97e- 8   5000
     ## # ... with 89 more rows
 
 ``` r
@@ -10824,8 +10824,8 @@ output\_dir.
 #                              output_file = "dlookr_ergo_eda.html")
 ```
 
-Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are
-in the output directory.
+Reports (both eda and diag) for `fake_ppl` are in the report\_examples
+directory.
 
 <br /> <br />
 
@@ -10986,7 +10986,7 @@ end_time <- Sys.time()
 end_time - start_time
 ```
 
-    ## Time difference of 1.169148 secs
+    ## Time difference of 0.2184479 secs
 
 ``` r
 ## ^ pretty fast (but not many rules)

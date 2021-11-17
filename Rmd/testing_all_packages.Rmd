@@ -167,7 +167,7 @@ Example line to make a report (commented out because I've already generated the 
 # create_report(fake_ppl, output_file = "dataexplorer_report_fakeppl.html", output_dir = "output/")
 ```
 
-Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the output directory. 
+Reports for `fake_ppl` and `owid_covid` are in the report_examples directory. 
 
 For `glob_mob`, I bumped up the memory limit, and things were going pretty well. But, after ~10 min, the report quit with an error message that was related to the data itself, rather than memory limits or time limits. ("all discrete features ignored! Nothing to plot!"). Basically, for all categorical variables, there were too many categories for the `plot_bar()` threshold. Rather than skip the graph and move on, the report terminated entirely. This approach isn't very flexible for running on datasets where you don't know exactly what the layout is yet.
 
@@ -334,7 +334,7 @@ Sample code to get a report. Note: a relative path didn't work for output_dir.
 #                              output_file = "dlookr_ergo_eda.html")
 ```
 
-Reports for `fake_ppl`, `ergo`, and `owid_covid` were produced and are in the output directory. 
+Reports (both eda and diag) for `fake_ppl` are in the report_examples directory. 
 
 <br />
 <br />
