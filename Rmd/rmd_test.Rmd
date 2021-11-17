@@ -2,7 +2,10 @@
 title: "rmd_test"
 author: "Olivia de Goede"
 date: "16/11/2021"
-output: github_document
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}

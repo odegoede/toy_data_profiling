@@ -3,6 +3,16 @@ rmd\_test
 Olivia de Goede
 16/11/2021
 
+-   [Intro](#intro)
+    -   [Package info](#package-info)
+-   [tl;dr](#tldr)
+-   [Set-up](#set-up)
+    -   [Install packages](#install-packages)
+    -   [Toy datasets](#toy-datasets)
+-   [1. DataExplorer](#1-dataexplorer)
+    -   [Examples of tables and graphs made by this
+        package](#examples-of-tables-and-graphs-made-by-this-package)
+
 ## Intro
 
 ### Package info
